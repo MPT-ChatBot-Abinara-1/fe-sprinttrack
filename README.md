@@ -1,72 +1,106 @@
 # fe-sprinttrack
 
-Frontend Web Application untuk **SprintTrack Abinara-1** (Tim Robotik Abinara ITS) menggunakan **Next.js (App Router), TypeScript, Tailwind CSS, Socket.io Client, dan Recharts**.
+Aplikasi web frontend untuk sistem manajemen sprint **SprintTrack Abinara-1** (Tim Robotik Abinara ITS). Repositori ini dibangun menggunakan Next.js (App Router), TypeScript, Tailwind CSS, Socket.io Client, dan Recharts, menyediakan kerangka antarmuka papan Kanban real-time, filter divisi, modal detail tugas beserta alur review dan log aktivitas, halaman autentikasi, serta visualisasi analitik sprint.
 
-Template ini menyediakan tampilan antarmuka siap pakai: Papan Kanban 4 kolom real-time, filter divisi, modal detail tugas dengan alur review & log aktivitas, autentikasi terikat divisi & peran, serta visualisasi Burndown Chart sesuai **PRD Baseline Sprint 1**.
+## Prasyarat
 
----
+- Node.js v18 atau lebih baru
+- npm v9 atau lebih baru
 
-## 🎯 Pemetaan Komponen Frontend ke PRD
+## Teknologi Utama
 
-| Kebutuhan PRD | Deskripsi | Letak File Komponen / Halaman |
-|---|---|---|
-| **FR-01 & FR-02** | Halaman masuk & registrasi dengan input peran, divisi, serta nomor WhatsApp aktif | `src/app/login/page.tsx`<br>`src/app/register/page.tsx` |
-| **FR-06 & FR-08** | Papan Kanban 4 kolom (`TODO`, `IN_PROGRESS`, `REVIEW`, `DONE`) dengan kartu berisi badge divisi & deadline | `src/app/page.tsx`<br>`src/components/kanban-column.tsx`<br>`src/components/task-card.tsx` |
-| **FR-07** | Sinkronisasi posisi kartu secara real-time via WebSocket Socket.io (<= 5 detik) | `src/lib/socket.ts`<br>`src/app/page.tsx` (`task:updated` listener) |
-| **FR-09 & FR-10** | Drawer/Modal detail spesifikasi teknis, pembaruan status tugas, & pencatatan log aktivitas | `src/components/task-detail-modal.tsx` |
-| **FR-11** | Tindakan review Staff Ahli (Approve ke Done atau Reject dengan catatan revisi wajib) | `src/components/task-detail-modal.tsx` |
-| **FR-15 & FR-16** | Visualisasi Burndown Chart real-time (Recharts) & tombol unduh laporan performa PDF | `src/app/analytics/page.tsx` |
+- Next.js 15 (App Router) & React 19
+- TypeScript
+- Tailwind CSS
+- Socket.io Client
+- Recharts & Lucide React
 
----
+## Instalasi dan Menjalankan Proyek
 
-## 📁 Struktur Direktori
+1. Clone repositori ini:
+
+   ```bash
+   git clone https://github.com/MPT-ChatBot-Abinara-1/fe-sprinttrack.git
+   cd fe-sprinttrack
+   ```
+
+2. Pasang seluruh dependensi:
+
+   ```bash
+   npm install
+   ```
+
+3. Salin file konfigurasi environment dan sesuaikan URL layanan backend:
+
+   ```bash
+   cp .env.example .env.local
+   ```
+
+   Untuk Windows PowerShell:
+
+   ```powershell
+   Copy-Item .env.example .env.local
+   ```
+
+   Pastikan `NEXT_PUBLIC_API_URL` dan `NEXT_PUBLIC_WS_URL` pada `.env.local` mengarah ke server `be-sprinttrack` yang sedang berjalan.
+
+4. Jalankan aplikasi dalam mode pengembangan:
+
+   ```bash
+   npm run dev
+   ```
+
+   Buka `http://localhost:3000` di browser untuk mengakses aplikasi.
+
+5. Untuk membangun dan menjalankan versi produksi:
+
+   ```bash
+   npm run build
+   npm run start
+   ```
+
+## Struktur Proyek
 
 ```text
 fe-sprinttrack/
-├── .env.example               # Variabel environment (API backend & WebSocket URL)
-├── .gitignore                 # Konfigurasi ignore git Next.js
-├── package.json               # Dependensi Next.js, React, Tailwind, Recharts
-├── tsconfig.json              # Konfigurasi TypeScript Next.js
-├── tailwind.config.ts         # Konfigurasi Tailwind CSS
-├── postcss.config.mjs         # Konfigurasi PostCSS
-├── README.md                  # Panduan proyek & checklist developer
+├── .env.example                  # Contoh konfigurasi variabel environment
+├── .gitignore                    # Daftar file dan direktori yang diabaikan Git
+├── package.json                  # Metadata proyek, dependensi, dan skrip npm
+├── tsconfig.json                 # Konfigurasi compiler TypeScript
+├── tailwind.config.ts            # Konfigurasi Tailwind CSS
+├── postcss.config.mjs            # Konfigurasi PostCSS
+├── README.md                     # Dokumentasi proyek
 └── src/
     ├── app/
-    │   ├── globals.css        # Setup Tailwind directives & default theme
-    │   ├── layout.tsx         # Root layout dengan Navbar navigasi
-    │   ├── page.tsx           # Dashboard utama: Papan Kanban real-time (FR-06/07/08)
-    │   ├── login/page.tsx     # Form masuk pengguna (FR-01)
-    │   ├── register/page.tsx  # Form daftar dengan nomor WhatsApp (FR-01/02)
-    │   └── analytics/page.tsx # Burndown Chart & download laporan PDF (FR-15/16)
+    │   ├── globals.css           # Konfigurasi dasar styling dan directive Tailwind
+    │   ├── layout.tsx            # Root layout aplikasi beserta navbar
+    │   ├── page.tsx              # Halaman utama papan Kanban dan filter divisi
+    │   ├── login/
+    │   │   └── page.tsx          # Halaman masuk pengguna
+    │   ├── register/
+    │   │   └── page.tsx          # Halaman pendaftaran pengguna dan nomor WhatsApp
+    │   ├── analytics/
+    │   │   └── page.tsx          # Halaman analitik Burndown Chart dan ekspor laporan
+    │   └── not-found.tsx         # Halaman 404 ketika rute tidak ditemukan
     ├── components/
-    │   ├── navbar.tsx         # Navigasi utama
-    │   ├── kanban-column.tsx  # Kolom Kanban status tugas
-    │   ├── task-card.tsx      # Kartu tugas dengan indikator divisi & deadline
-    │   └── task-detail-modal.tsx # Modal detail tugas, review Staff Ahli, & log aktivitas
+    │   ├── navbar.tsx            # Navigasi utama aplikasi
+    │   ├── kanban-column.tsx     # Komponen kolom status papan Kanban
+    │   ├── task-card.tsx         # Komponen kartu tugas pada kolom Kanban
+    │   └── task-detail-modal.tsx # Modal detail tugas, alur review, dan log aktivitas
     ├── lib/
-    │   ├── api.ts             # Fetch wrapper untuk integrasi REST API backend
-    │   ├── socket.ts          # Socket.io client untuk sinkronisasi real-time
-    │   └── utils.ts           # Helper classNames & formatting tanggal
+    │   ├── api.ts                # Helper HTTP fetch untuk komunikasi ke REST API backend
+    │   ├── socket.ts             # Inisialisasi koneksi WebSocket Socket.io Client
+    │   └── utils.ts              # Fungsi utilitas penggabungan class CSS dan format tanggal
     └── types/
-        └── sprinttrack.ts     # Definisi tipe Task, User, Division, Status, dll.
+        └── sprinttrack.ts        # Definisi tipe TypeScript untuk data domain aplikasi
 ```
 
----
+## Skrip Tersedia
 
-## 🚀 Cara Menjalankan
-
-### 1. Salin Environment
-```bash
-cp .env.example .env.local
-```
-
-### 2. Pasang Dependensi
-```bash
-npm install
-```
-
-### 3. Jalankan Mode Pengembangan
-```bash
-npm run dev
-```
-Aplikasi web dapat diakses di `http://localhost:3000`.
+| Perintah | Deskripsi |
+| --- | --- |
+| `npm run dev` | Menjalankan server pengembangan Next.js |
+| `npm run build` | Membangun bundle aplikasi siap produksi |
+| `npm run start` | Menjalankan hasil build produksi Next.js |
+| `npm run typecheck` | Memeriksa validitas tipe TypeScript tanpa menghasilkan file output |
+| `npm run lint` | Menjalankan linter Next.js untuk pemeriksaan kode |
