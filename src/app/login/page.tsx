@@ -13,6 +13,8 @@ const inputClass =
 
 const CREDENTIAL_ERROR = 'Email atau kata sandi yang Anda masukkan salah';
 const NETWORK_ERROR = 'Tidak dapat terhubung ke server. Periksa koneksi internet Anda.';
+const INCOMPLETE_ERROR =
+  'Respons server tidak lengkap (token atau profil pengguna tidak ada). Hubungi tim backend.';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -39,6 +41,14 @@ export default function LoginPage() {
         method: 'POST',
         body: JSON.stringify({ email: email.trim(), password }),
       });
+
+      // Server wajib mengirim token DAN profil pengguna. Jika salah satunya hilang,
+      // jangan dianggap login berhasil: Navbar tidak akan bisa menampilkan nama/divisi.
+      if (!data?.token || !data?.user) {
+        setError(INCOMPLETE_ERROR);
+        setIsLoading(false);
+        return;
+      }
 
       // Simpan token JWT + profil pengguna, lalu langsung ke papan Kanban.
       saveSession(data.token, data.user);
