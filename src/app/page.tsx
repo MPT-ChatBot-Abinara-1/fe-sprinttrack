@@ -1,5 +1,5 @@
 'use client';
-
+import { ProtectedRoute } from '@/components/protected-route';
 import { useState, useEffect } from 'react';
 import { Task, TaskStatus, Division } from '@/types/sprinttrack';
 import { KanbanColumn } from '@/components/kanban-column';
@@ -98,8 +98,9 @@ export default function KanbanPage() {
     { status: 'DONE', title: 'Done' },
   ];
 
-  return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+   return (
+    <ProtectedRoute>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
       {/* Header Dashboard & Filter Divisi (FR-08) */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
@@ -150,5 +151,6 @@ export default function KanbanPage() {
         }}
       />
     </div>
+    </ProtectedRoute>
   );
 }
